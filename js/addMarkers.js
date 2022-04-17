@@ -1,18 +1,18 @@
 AFRAME.registerComponent("create-markers", {
   init: async function () {
     var mainScene = document.querySelector("#main-scene");
-    var dishes = await this.getDishes();
-    dishes.map(dish => {
+    var cranes = await this.getCranes();
+    cranes.map(crane => {
       var marker = document.createElement("a-marker");
-      marker.setAttribute("id", dish.id);
+      marker.setAttribute("id", crane.id);
       marker.setAttribute("type", "pattern");
-      marker.setAttribute("url", dish.marker_pattern_url);
+      marker.setAttribute("url", crane.marker_pattern_url);
       marker.setAttribute("cursor", {
         rayOrigin: "mouse"
       });
       marker.setAttribute("markerhandler", {});
       mainScene.appendChild(marker);
-      console.log(dish.marker_pattern_url)
+      console.log(crane.marker_pattern_url)
 
       // Getting today's day
       var todaysDate = new Date();
@@ -28,21 +28,21 @@ AFRAME.registerComponent("create-markers", {
         "saturday"
       ];
 
-      if (!dish.unavailable_days.includes(days[todaysDay])) {
+      if (!crane.unavailable_days.includes(days[todaysDay])) {
         // Adding 3D model to scene
         var model = document.createElement("a-entity");
-        model.setAttribute("id", `model-${dish.id}`);
-        model.setAttribute("position", dish.position);
-        model.setAttribute("rotation", dish.rotation);
-        model.setAttribute("scale", dish.scale);
-        model.setAttribute("gltf-model", `url(${dish.model_url})`);
+        model.setAttribute("id", `model-${crane.id}`);
+        model.setAttribute("position", crane.position);
+        model.setAttribute("rotation", crane.rotation);
+        model.setAttribute("scale", crane.scale);
+        model.setAttribute("gltf-model", `url(${crane.model_url})`);
         model.setAttribute("gesture-handler", {});
         model.setAttribute("visible", false);
         marker.appendChild(model);
 
-        // Ingredients Container
+        // Crane Container
         var mainPlane = document.createElement("a-plane");
-        mainPlane.setAttribute("id", `main-plane-${dish.id}`);
+        mainPlane.setAttribute("id", `main-plane-${crane.id}`);
         mainPlane.setAttribute("position", { x: 0, y: 0, z: 0 });
         mainPlane.setAttribute("rotation", { x: -90, y: 0, z: 0 });
         mainPlane.setAttribute("width", 1.7);
@@ -50,9 +50,9 @@ AFRAME.registerComponent("create-markers", {
         mainPlane.setAttribute("visible", false);
         marker.appendChild(mainPlane);
 
-        // Dish title background plane
+        // Crane title background plane
         var titlePlane = document.createElement("a-plane");
-        titlePlane.setAttribute("id", `title-plane-${dish.id}`);
+        titlePlane.setAttribute("id", `title-plane-${crane.id}`);
         titlePlane.setAttribute("position", { x: 0, y: 0.89, z: 0.02 });
         titlePlane.setAttribute("rotation", { x: 0, y: 0, z: 0 });
         titlePlane.setAttribute("width", 1.69);
@@ -60,24 +60,24 @@ AFRAME.registerComponent("create-markers", {
         titlePlane.setAttribute("material", { color: "#F0C30F" });
         mainPlane.appendChild(titlePlane);
 
-        // Dish title
-        var dishTitle = document.createElement("a-entity");
-        dishTitle.setAttribute("id", `dish-title-${dish.id}`);
-        dishTitle.setAttribute("position", { x: 0, y: 0, z: 0.1 });
-        dishTitle.setAttribute("rotation", { x: 0, y: 0, z: 0 });
-        dishTitle.setAttribute("text", {
+        // Crane title
+        var craneTitle = document.createElement("a-entity");
+        craneTitle.setAttribute("id", `crane-title-${crane.id}`);
+        craneTitle.setAttribute("position", { x: 0, y: 0, z: 0.1 });
+        craneTitle.setAttribute("rotation", { x: 0, y: 0, z: 0 });
+        craneTitle.setAttribute("text", {
           font: "monoid",
           color: "black",
           width: 1.8,
           height: 1,
           align: "center",
-          value: dish.dish_name.toUpperCase()
+          value: crane.crane_name.toUpperCase()
         });
-        titlePlane.appendChild(dishTitle);
+        titlePlane.appendChild(craneTitle);
 
-        // Ingredients List
+        // Parts List
         var ingredients = document.createElement("a-entity");
-        ingredients.setAttribute("id", `ingredients-${dish.id}`);
+        ingredients.setAttribute("id", `parts-${crane.id}`);
         ingredients.setAttribute("position", { x: 0.3, y: 0, z: 0.1 });
         ingredients.setAttribute("rotation", { x: 0, y: 0, z: 0 });
         ingredients.setAttribute("text", {
@@ -85,13 +85,14 @@ AFRAME.registerComponent("create-markers", {
           color: "black",
           width: 2,
           align: "left",
-          value: `${dish.ingredients.join("\n\n")}`
+          value: `${crane.parts.join("\n\n")}`
         });
-        mainPlane.appendChild(ingredients);
+        mainPlane.appendChild(parts);
 
-        // Dish Price
+        // Crane Price
         var pricePlane = document.createElement("a-image");
-        pricePlane.setAttribute("id", `price-plane-${dish.id}`);
+        pricePlane.setAttribute("id", `price-plane-${crane.id}`);
+        //Take the plane reference from class code
         pricePlane.setAttribute(
           "src", "https://raw.githubusercontent.com/whitehatjr/menu-card-app/main/black-circle.png"
         );
@@ -102,7 +103,7 @@ AFRAME.registerComponent("create-markers", {
         pricePlane.setAttribute("visible", false);
 
         var price = document.createElement("a-entity");
-        price.setAttribute("id", `price-${dish.id}`);
+        price.setAttribute("id", `price-${crane.id}`);
         price.setAttribute("position", { x: 0.03, y: 0.05, z: 0.1 });
         price.setAttribute("rotation", { x: 0, y: 0, z: 0 });
         price.setAttribute("text", {
@@ -110,15 +111,15 @@ AFRAME.registerComponent("create-markers", {
           color: "white",
           width: 3,
           align: "center",
-          value: `Only\n $${dish.price}`
+          value: `Only\n $${crane.price}`
         });
 
         pricePlane.appendChild(price);
         marker.appendChild(pricePlane);
 
-        // Dish Rating plane
+        // Crane Rating plane
         var ratingPlane = document.createElement("a-entity");
-        ratingPlane.setAttribute("id", `rating-plane-${dish.id}`);
+        ratingPlane.setAttribute("id", `rating-plane-${crane.id}`);
         ratingPlane.setAttribute("position", { x: 2, y: 0, z: 0.5 });
         ratingPlane.setAttribute("geometry", {
           primitive: "plane",
@@ -134,7 +135,7 @@ AFRAME.registerComponent("create-markers", {
 
         // Ratings
         var rating = document.createElement("a-entity");
-        rating.setAttribute("id", `rating-${dish.id}`);
+        rating.setAttribute("id", `rating-${crane.id}`);
         rating.setAttribute("position", { x: 0, y: 0.05, z: 0.1 });
         rating.setAttribute("rotation", { x: 0, y: 0, z: 0 });
         rating.setAttribute("text", {
@@ -142,15 +143,15 @@ AFRAME.registerComponent("create-markers", {
           color: "black",
           width: 2.4,
           align: "center",
-          value: `Customer Rating: ${dish.last_rating}`
+          value: `Customer Rating: ${crane.last_rating}`
         });
 
         ratingPlane.appendChild(rating);
         marker.appendChild(ratingPlane);
 
-        // Dish review plane
+        // Crane review plane
         var reviewPlane = document.createElement("a-entity");
-        reviewPlane.setAttribute("id", `review-plane-${dish.id}`);
+        reviewPlane.setAttribute("id", `review-plane-${crane.id}`);
         reviewPlane.setAttribute("position", { x: 2, y: 0, z: 0 });
         reviewPlane.setAttribute("geometry", {
           primitive: "plane",
@@ -164,9 +165,9 @@ AFRAME.registerComponent("create-markers", {
         reviewPlane.setAttribute("rotation", { x: -90, y: 0, z: 0 });
         reviewPlane.setAttribute("visible", false);
 
-        // Dish review
+        // Crane review
         var review = document.createElement("a-entity");
-        review.setAttribute("id", `review-${dish.id}`);
+        review.setAttribute("id", `review-${crane.id}`);
         review.setAttribute("position", { x: 0, y: 0.05, z: 0.1 });
         review.setAttribute("rotation", { x: 0, y: 0, z: 0 });
         review.setAttribute("text", {
@@ -174,7 +175,7 @@ AFRAME.registerComponent("create-markers", {
           color: "black",
           width: 2.4,
           align: "center",
-          value: `Customer Review: \n${dish.last_review}`
+          value: `Customer Review: \n${crane.last_review}`
         });
         
         reviewPlane.appendChild(review);
@@ -182,10 +183,10 @@ AFRAME.registerComponent("create-markers", {
       }
     });
   },
-  getDishes: async function () {
+  getCrane: async function () {
     return await firebase
       .firestore()
-      .collection("dishes")
+      .collection("cranes")
       .get()
       .then(snap => {
         return snap.docs.map(doc => doc.data());
