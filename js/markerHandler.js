@@ -49,7 +49,7 @@ AFRAME.registerComponent("markerhandler", {
   getToys: async function() {
     return await firebase
       .firestore()
-      .collection("crane")
+      .collection("cranes")
       .get()
       .then(snap => {
         return snap.docs.map(doc => doc.data());
